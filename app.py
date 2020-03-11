@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 import json
 import requests
 import requests_cache
-import pprint
 
 requests_cache.install_cache('nutrition_app_cache', backend='sqlite', expire_after=36000)
 
@@ -52,4 +51,4 @@ def delete_user(client_name,client_surname):
     return jsonify({ ' success ' : True})
 
 if __name__=="__main__":
-    app.run(host='127.0.0.1')
+    app.run(host='0.0.0.0',port=5000)
