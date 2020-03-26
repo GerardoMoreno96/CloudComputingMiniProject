@@ -18,18 +18,18 @@ def create_new_client():
     if not request.json or not "name" in request.json or not "surname" in request.json \
         or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json:
         return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height'}), 400
-    new_record = {
-        'name': request.json['name'],
-        'surname': request.json['surname'],
-        'age': int(request.json['age']),
-        'sex': request.json['sex'],
-        'weight': float(request.json['weight']),
-        'height': float(request.json['height'])
-    }
-    session.execute( """INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})""".format\
-        (new_record['name'],new_record['surname'],new_record['age'],new_record['sex'],new_record['weight'],new_record['height'] ))
+        
+    name =  request.json['name']
+    surname = request.json['surname']
+    age = int(request.json['age'])
+    sex = request.json['sex']
+    weight = float(request.json['weight'])
+    height = float(request.json['height'])
     
-    return jsonify({'message': 'created: /new_client {}'.format(new_record['name'])}), 201
+    query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
+        .format(name,surname,age,sex,weight,height)
+    session.execute(query)    
+    return jsonify({'message': 'created: /new_client {},{}'.format(name,surname)}), 201
 
 @app.route('/all', methods=['GET'])
 def get_everything():
@@ -67,6 +67,36 @@ def delete_user():
     return jsonify({'message': 'deleted: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
     
+@app.route('/update_client_weight',methods=['PUT'])
+def update_user_weight():
+    name = request.json['name']
+    surname = request.json['surname']
+    weight = float(request.json['weight'])
+    query = "UPDATE gym.users SET weight={} WHERE name='{}' AND surname='{}'".format(weight,name,surname)
+    session.execute(query)
+    return jsonify({'message': 'updated: /user/{},{}'.format\
+        (request.json['name'],request.json['surname'])}),200
+
+@app.route('/update_client_height',methods=['PUT'])
+def update_user_height():
+    name = request.json['name']
+    surname = request.json['surname']
+    height = float(request.json['height'])
+    query = "UPDATE gym.users SET height={} WHERE name='{}' AND surname='{}'".format(height,name,surname)
+    session.execute(query)
+    return jsonify({'message': 'updated: /user/{},{}'.format\
+        (request.json['name'],request.json['surname'])}),200
+
+@app.route('/update_client_age',methods=['PUT'])
+def update_user_age():
+    name = request.json['name']
+    surname = request.json['surname']
+    age = int(request.json['age'])
+    query = "UPDATE gym.users SET age={} WHERE name='{}' AND surname='{}'".format(age,name,surname)
+    session.execute(query)
+    return jsonify({'message': 'updated: /user/{},{}'.format\
+        (request.json['name'],request.json['surname'])}),200
+
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port=5000)
