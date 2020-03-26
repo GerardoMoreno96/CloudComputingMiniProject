@@ -60,14 +60,12 @@ def get_external_workout():
 
 @app.route('/delete_user',methods=['DELETE'])
 def delete_user():
-    session.execute( """DELETE FROM gym.users WHERE name={} AND surname={})""".format\
-        (request.json['name'],request.json['surname']))
+    name = request.json['name']
+    surname = request.json['surname']
+    query = "DELETE FROM gym.users WHERE name='{}' AND surname='{}'".format(name,surname)
+    session.execute(query)
     return jsonify({'message': 'deleted: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
-    # matching_user = [user for user in all_records if user["name"] == client_name and user["surname"] == client_surname]
-    # if len(matching_user)==0:
-    #     return jsonify({ ' error ' : 'user not found! ' }), 404
-    # all_records.remove(matching_user[0])
     
 
 if __name__=="__main__":
