@@ -9,10 +9,13 @@ session = cluster.connect()
 
 app = Flask(__name__)
 
+
+# Index page, welcome the user 
 @app.route('/', methods=['GET'])
 def hello():
     return('<h1>Welcome to Gerardo\'s Gym Progress App</h1>')
 
+# Create a new user for the app
 @app.route('/new_client', methods=['POST'])
 def create_new_client():
     if not request.json or not "name" in request.json or not "surname" in request.json \
@@ -31,6 +34,7 @@ def create_new_client():
     session.execute(query)    
     return jsonify({'message': 'created: /new_client {},{}'.format(name,surname)}), 201
 
+#Get all users in the database
 @app.route('/all', methods=['GET'])
 def get_everything():
     rows = session.execute( """ SELECT * FROM gym.users""")
@@ -48,6 +52,7 @@ def get_everything():
         )
     return jsonify(result)
 
+#Make an call to an external API to get routines
 @app.route('/external_routines', methods=['GET'])
 def get_external_workout():
     workouts_template = 'https://wger.de/api/v2/exercise/?language=2'
@@ -58,6 +63,7 @@ def get_external_workout():
         print(resp.reason)
     return workouts
 
+#Delete an user from the Database
 @app.route('/delete_user',methods=['DELETE'])
 def delete_user():
     name = request.json['name']
@@ -67,6 +73,7 @@ def delete_user():
     return jsonify({'message': 'deleted: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
     
+#Update the weight of a user
 @app.route('/update_client_weight',methods=['PUT'])
 def update_user_weight():
     name = request.json['name']
@@ -77,6 +84,7 @@ def update_user_weight():
     return jsonify({'message': 'updated: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
 
+#Update the height of a user
 @app.route('/update_client_height',methods=['PUT'])
 def update_user_height():
     name = request.json['name']
@@ -87,6 +95,7 @@ def update_user_height():
     return jsonify({'message': 'updated: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
 
+#Update the age of a user
 @app.route('/update_client_age',methods=['PUT'])
 def update_user_age():
     name = request.json['name']
