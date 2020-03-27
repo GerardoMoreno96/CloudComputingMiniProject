@@ -9,7 +9,7 @@ Whithin this app, the user is able to update its age, weight and height whenever
 
 <b>Register a new user in the database:</b>
 
-/new_client - 
+/new_user - 
  The user must provide:
  * Name
  * Surname
@@ -21,7 +21,7 @@ Whithin this app, the user is able to update its age, weight and height whenever
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"name":"#NAME#","surname":"#SURNAME#","age":"#Integer Number#","sex":"#Male/Female#","weight":"#Float Number#","height":"#Float Number"}' 0.0.0.0:5000/new_client
+curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber"}' 0.0.0.0:5000/new_user
 
 ```
 
@@ -39,6 +39,50 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"#NAME#","surnam
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"#NAME","surname":"#SURNAME#"}' 0.0.0.0:5000/delete_user
+curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surname":"SURNAME"}' 0.0.0.0:5000/delete_user
 
+```
+
+<b>Update user weight:</b>
+
+/update_user_weight - 
+ The user must provide:
+ * Name
+ * Surname
+ * Weight (float)
+
+In the following format and execute the command:
+
+```
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum"}' 0.0.0.0:5000/update_user_weight
+
+```
+
+<b>Update user height:</b>
+
+/update_user_height - 
+ The user must provide:
+ * Name
+ * Surname
+ * Height (float)
+
+In the following format and execute the command:
+
+```
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","height":"FloatNumber"}' 0.0.0.0:5000/update_client_height
+
+```
+
+<b>Update user age:</b>
+
+/update_user_height - 
+ The user must provide:
+ * Name
+ * Surname
+ * Age (integer)
+
+In the following format and execute the command:
+
+```
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber"}' 0.0.0.0:5000/update_client_age
 ```

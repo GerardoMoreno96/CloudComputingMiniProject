@@ -16,8 +16,8 @@ def hello():
     return('<h1>Welcome to Gerardo\'s Gym Progress App</h1>')
 
 # Create a new user for the app
-@app.route('/new_client', methods=['POST'])
-def create_new_client():
+@app.route('/new_user', methods=['POST'])
+def create_new_user():
     if not request.json or not "name" in request.json or not "surname" in request.json \
         or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json:
         return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height'}), 400
@@ -32,7 +32,7 @@ def create_new_client():
     query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
         .format(name,surname,age,sex,weight,height)
     session.execute(query)    
-    return jsonify({'message': 'created: /new_client {},{}'.format(name,surname)}), 201
+    return jsonify({'message': 'created: /new_user {},{}'.format(name,surname)}), 201
 
 #Get all users in the database
 @app.route('/all', methods=['GET'])
@@ -74,7 +74,7 @@ def delete_user():
         (request.json['name'],request.json['surname'])}),200
     
 #Update the weight of a user
-@app.route('/update_client_weight',methods=['PUT'])
+@app.route('/update_user_weight',methods=['PUT'])
 def update_user_weight():
     name = request.json['name']
     surname = request.json['surname']
@@ -85,7 +85,7 @@ def update_user_weight():
         (request.json['name'],request.json['surname'])}),200
 
 #Update the height of a user
-@app.route('/update_client_height',methods=['PUT'])
+@app.route('/update_user_height',methods=['PUT'])
 def update_user_height():
     name = request.json['name']
     surname = request.json['surname']
@@ -96,7 +96,7 @@ def update_user_height():
         (request.json['name'],request.json['surname'])}),200
 
 #Update the age of a user
-@app.route('/update_client_age',methods=['PUT'])
+@app.route('/update_user_age',methods=['PUT'])
 def update_user_age():
     name = request.json['name']
     surname = request.json['surname']
