@@ -22,7 +22,6 @@ In the following format and execute the command:
 
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber"}' 0.0.0.0:5000/new_user
-
 ```
 
 <b>Get routines:</b>
@@ -40,7 +39,6 @@ In the following format and execute the command:
 
 ```
 curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surname":"SURNAME"}' 0.0.0.0:5000/delete_user
-
 ```
 
 <b>Update user weight:</b>
@@ -55,7 +53,6 @@ In the following format and execute the command:
 
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum"}' 0.0.0.0:5000/update_user_weight
-
 ```
 
 <b>Update user height:</b>
@@ -70,7 +67,6 @@ In the following format and execute the command:
 
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","height":"FloatNumber"}' 0.0.0.0:5000/update_client_height
-
 ```
 
 <b>Update user age:</b>
@@ -86,3 +82,38 @@ In the following format and execute the command:
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber"}' 0.0.0.0:5000/update_client_age
 ```
+- - - -
+
+### Deployment
+1.- Run cassandra in a Docker container and expose port 9042:
+```
+sudo docker run --name cassandra-cont -p 9042:9042 -d cassandra
+```
+
+2.- Access the cassandra container in iterative mode:
+```
+sudo docker exec -it cassandra-cont cqlsh
+```
+
+3.- Create a dedicated keyspace inside cassandra for the gym database:
+
+```
+CREATE KEYSPACE gym WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 1};
+```
+
+4.- Create the database table for the users:
+```
+CREATE TABLE gym.users (Name text, Surname text, Age int, Sex text, Weight float, Height float, PRIMARY KEY (Name, Surname));
+```
+
+5.- Build our own Docker image:
+```
+sudo docker build . --tag=gymprogress:v1
+```
+
+6.- Run the container for our image:
+```
+sudo docker run -p 5000:5000 gymprogress:v1
+```
+
+After that, the webapp will be accessible at port 5000
