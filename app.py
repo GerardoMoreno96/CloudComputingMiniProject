@@ -66,6 +66,9 @@ def get_external_workout():
 #Delete an user from the Database
 @app.route('/delete_user',methods=['DELETE'])
 def delete_user():
+    if not request.json or not "name" in request.json or not "surname" in request.json:
+        return jsonify({'error':'the new record needs to have name and surname'}), 400    
+    
     name = request.json['name']
     surname = request.json['surname']
     query = "DELETE FROM gym.users WHERE name='{}' AND surname='{}'".format(name,surname)
@@ -76,36 +79,60 @@ def delete_user():
 #Update the weight of a user
 @app.route('/update_user_weight',methods=['PUT'])
 def update_user_weight():
+    if not request.json or not "name" in request.json or not "surname" in request.json or not "weight":
+        return jsonify({'error':'the new record needs to have name,surname and weight'}), 400
+
     name = request.json['name']
     surname = request.json['surname']
     weight = float(request.json['weight'])
-    query = "UPDATE gym.users SET weight={} WHERE name='{}' AND surname='{}'".format(weight,name,surname)
-    session.execute(query)
-    return jsonify({'message': 'updated: /user/{},{}'.format\
-        (request.json['name'],request.json['surname'])}),200
+    
+    result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
+    if (result.was_applied != 0):
+        query = "UPDATE gym.users SET weight={} WHERE name='{}' AND surname='{}'".format(weight,name,surname)
+        session.execute(query)
+        return jsonify({'message': 'updated: /user/{},{}'.format\
+            (request.json['name'],request.json['surname'])}),200
+    else:
+        return jsonify({'error':'User does not exist'}), 404
 
 #Update the height of a user
 @app.route('/update_user_height',methods=['PUT'])
 def update_user_height():
+    if not request.json or not "name" in request.json or not "surname" in request.json or not "height" in request.json:
+        return jsonify({'error':'the new record needs to have name,surname and height'}), 400
+        
     name = request.json['name']
     surname = request.json['surname']
     height = float(request.json['height'])
-    query = "UPDATE gym.users SET height={} WHERE name='{}' AND surname='{}'".format(height,name,surname)
-    session.execute(query)
-    return jsonify({'message': 'updated: /user/{},{}'.format\
-        (request.json['name'],request.json['surname'])}),200
+    
+    result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
+    if (result.was_applied != 0):
+        query = "UPDATE gym.users SET height={} WHERE name='{}' AND surname='{}'".format(height,name,surname)
+        session.execute(query)
+        return jsonify({'message': 'updated: /user/{},{}'.format\
+            (request.json['name'],request.json['surname'])}),200
+    else:
+        return jsonify({'error':'User does not exist'}), 404
+
 
 #Update the age of a user
 @app.route('/update_user_age',methods=['PUT'])
 def update_user_age():
+    if not request.json or not "name" in request.json or not "surname" in request.json or not "age" in request.json:
+        return jsonify({'error':'the new record needs to have name,surname and age'}), 400
+        
     name = request.json['name']
     surname = request.json['surname']
     age = int(request.json['age'])
-    query = "UPDATE gym.users SET age={} WHERE name='{}' AND surname='{}'".format(age,name,surname)
-    session.execute(query)
-    return jsonify({'message': 'updated: /user/{},{}'.format\
-        (request.json['name'],request.json['surname'])}),200
-
+    
+    result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
+    if (result.was_applied != 0):
+        query = "UPDATE gym.users SET age={} WHERE name='{}' AND surname='{}'".format(age,name,surname)
+        session.execute(query)
+        return jsonify({'message': 'updated: /user/{},{}'.format\
+            (request.json['name'],request.json['surname'])}),200
+    else:
+        return jsonify({'error':'User does not exist'}), 404
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port=5000)
