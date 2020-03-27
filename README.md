@@ -7,7 +7,7 @@ Whithin this app, the user is able to update its age, weight and height whenever
 
 ### How it works?
 
-<u>Register a new user in the database:</u>
+<b>Register a new user in the database:</b>
 
 /new_client - 
  The user must provide:
@@ -25,11 +25,11 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"#NAME#","surnam
 
 ```
 
-<u>Get routines:</u>
+<b>Get routines:</b>
 
 /external_routines
 
-<u>Delete user from the database:</u>
+<b>Delete user from the database:</b>
 
 /delete_user - 
  The user must provide:
