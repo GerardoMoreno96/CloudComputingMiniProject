@@ -10,13 +10,13 @@ Whithin this app, the user is able to update its age, weight and height whenever
 <u>Register a new user in the database: </u>
 
 /new_client - 
- Markup : The user must provide:
-              * Name
-              * Surname
-              * Age (integer)
-              * Sex (Male or Female)
-              * Weight (float)
-              * Height (float)
+ The user must provide:
+ * Name
+ * Surname
+ * Age (integer)
+ * Sex (Male or Female)
+ * Weight (float)
+ * Height (float)
 
 In the following json format:
 
