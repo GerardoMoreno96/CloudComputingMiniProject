@@ -105,6 +105,8 @@ CREATE KEYSPACE gym WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication
 ```
 CREATE TABLE gym.users (Name text, Surname text, Age int, Sex text, Weight float, Height float, PRIMARY KEY (Name, Surname));
 ```
+4.- 
+CREATE TABLE gym.accounts (Name text, Surname text, Password text, PRIMARY KEY (Name, Surname));
 
 5.- Build our own Docker image:
 ```

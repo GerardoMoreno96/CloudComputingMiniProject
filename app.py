@@ -9,15 +9,21 @@ session = cluster.connect()
 
 app = Flask(__name__)
 
+@app.route('/')
+def login():
+    return render_template('login.html')
+    # return('<h1>Welcome to Gerardo\'s Gym Progress App</h1>')
 
 # Index page, welcome the user 
-@app.route('/', methods=['GET'])
+@app.route('/welcome')
 def hello():
-    return('<h1>Welcome to Gerardo\'s Gym Progress App</h1>')
+    return render_template('index.html')
+    # return('<h1>Welcome to Gerardo\'s Gym Progress App</h1>')
 
-# Create a new user for the app
-@app.route('/new_user', methods=['POST'])
+# Create a new user for the app from the command line
+@app.route('/new_user_cli', methods=['POST'])
 def create_new_user():
+      
     if not request.json or not "name" in request.json or not "surname" in request.json \
         or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json:
         return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height'}), 400
@@ -33,6 +39,47 @@ def create_new_user():
         .format(name,surname,age,sex,weight,height)
     session.execute(query)    
     return jsonify({'message': 'created: /new_user {},{}'.format(name,surname)}), 201
+
+# Create a new user from the browser
+@app.route('/new_user_browser', methods=['POST'])
+def create_new_user_browser():
+    
+    name =  request.form['name']
+    surname = request.form['surname']
+    age = int(request.form['age'])
+    sex = request.form['sex']
+    weight = float(request.form['weight'])
+    height = float(request.form['height'])
+    password = request.form['password']
+
+    result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
+    if (result.was_applied == 0):
+
+        query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
+            .format(name,surname,age,sex,weight,height)
+        session.execute(query)
+
+        password_query = "INSERT INTO gym.accounts (name,surname,password) VALUES ('{}','{}','{}')".format(name,surname,password)
+        session.execute(password_query)
+
+        return "Success",201
+    else:
+        return jsonify({'error':'User already exists'}), 404
+   
+#Login from the browser
+@app.route('/login_user_browser',methods=['POST'])
+def login_browser():
+
+    name =  request.form['name']
+    surname = request.form['surname']
+    password = request.form['password']
+
+    result = session.execute("""select count(*) from gym.accounts where name='{}' AND surname='{}' AND password='{}' ALLOW FILTERING"""\
+        .format(name,surname,password))
+    if (result.was_applied != 0):
+       return render_template('index.html')
+    else:
+        return jsonify({'error':'Incorrect username or password'}), 404
 
 #Get all users in the database
 @app.route('/all', methods=['GET'])
@@ -50,18 +97,27 @@ def get_everything():
                 'height': r.height
             }
         )
+    # return render_template("index.html",content=result)
     return jsonify(result)
 
 #Make an call to an external API to get routines
-@app.route('/external_routines', methods=['GET'])
-def get_external_workout():
-    workouts_template = 'https://wger.de/api/v2/exercise/?language=2'
-    resp = requests.get(workouts_template)
-    if resp.ok:
-        workouts = resp.json()
+@app.route('/external_routines/<category>', methods=['GET'])
+def get_external_workout(category):
+    categories_url  = 'https://wger.de/api/v2/exercisecategory/'
+    first_resp = requests.get(categories_url)
+    if first_resp.ok:
+        categories = first_resp.json()
+        for excercise in categories['results']:
+            if excercise['name'] == category.capitalize():
+                workouts_template = 'https://wger.de/api/v2/exercise/?language=2&category={}'.format(int(excercise['id']))
+                resp = requests.get(workouts_template)
+                if resp.ok:
+                    workouts = resp.json()
+                else:
+                    print(resp.reason)
+                return workouts
     else:
         print(resp.reason)
-    return workouts
 
 #Delete an user from the Database
 @app.route('/delete_user',methods=['DELETE'])
