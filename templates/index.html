@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Bootstrap 4, from LayoutIt!</title>
+    <title>Gerry's WebApp</title>
 
     <meta name="description" content="Source code generated using layoutit.com">
     <meta name="author" content="LayoutIt!">
@@ -21,7 +21,7 @@
 		<div class="col-md-12">
 			<div class="jumbotron">
 				<h2>
-					Welcome to Gerardo's Gym app!
+					Welcome back {{ name }} {{ surname }} !
 				</h2>
 				<p>
 					This app lets you record and update your gym progress.
@@ -37,7 +37,7 @@
 				</h5>
 				<div class="card-body">
 					<p class="card-text">
-						PENDING
+						{{ age }}
 					</p>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 				</h5>
 				<div class="card-body">
 					<p class="card-text">
-						PENDING
+						{{ weight }}
 					</p>
 				</div>
 			</div>
@@ -61,7 +61,7 @@
 				</h5>
 				<div class="card-body">
 					<p class="card-text">
-						PENDING
+						{{ height }}
 					</p>
 				</div>
 			</div>
@@ -69,17 +69,17 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<form role="form">
-				<div class="form-group">
-					 
-					<label for="excercise">
-						What do you want to work?
-					</label>
-					<input type="text" class="form-control" id="excercise">
-				</div>
+			<form method="POST" action="/external_routines_browser">
+				
+				<label for="excercise">
+					What do you want to work?
+				</label>
+				
+				<input type="text" class="form-control" id="excercise" name=category>
+				
 				<button type="submit" class="btn btn-primary">
 					Submit
-				</button>
+				</button>					
 			</form>
 		</div>
 	</div>
@@ -92,89 +92,21 @@
 				<thead>
 					<tr>
 						<th>
-							#
+							Date
 						</th>
 						<th>
-							Product
-						</th>
-						<th>
-							Payment Taken
-						</th>
-						<th>
-							Status
+							Weight
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Default
-						</td>
-					</tr>
 					<tr class="table-active">
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Approved
-						</td>
-					</tr>
-					<tr class="table-success">
-						<td>
-							2
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							02/04/2012
-						</td>
-						<td>
-							Declined
-						</td>
-					</tr>
-					<tr class="table-warning">
-						<td>
-							3
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							03/04/2012
-						</td>
-						<td>
-							Pending
-						</td>
-					</tr>
-					<tr class="table-danger">
-						<td>
-							4
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							04/04/2012
-						</td>
-						<td>
-							Call in to confirm
-						</td>
+					{% for value in weight_progress %}
+						<tr>
+							 <td> {{ value['date'] }} </td>
+							 <td> {{ value['weight'] }}</td>
+						</tr>
+					 {% endfor %}						
 					</tr>
 				</tbody>
 			</table>
@@ -187,89 +119,21 @@
 				<thead>
 					<tr>
 						<th>
-							#
+							Excercise name
 						</th>
 						<th>
-							Product
-						</th>
-						<th>
-							Payment Taken
-						</th>
-						<th>
-							Status
+							PR
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Default
-						</td>
-					</tr>
-					<tr class="table-active">
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Approved
-						</td>
-					</tr>
 					<tr class="table-success">
-						<td>
-							2
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							02/04/2012
-						</td>
-						<td>
-							Declined
-						</td>
-					</tr>
-					<tr class="table-warning">
-						<td>
-							3
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							03/04/2012
-						</td>
-						<td>
-							Pending
-						</td>
-					</tr>
-					<tr class="table-danger">
-						<td>
-							4
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							04/04/2012
-						</td>
-						<td>
-							Call in to confirm
-						</td>
+						{% for value in pr %}
+						<tr>
+							<td> {{ value['excercise_name'] }} </td>
+							<td> {{ value['record'] }}</td>
+						</tr>
+						{% endfor %}
 					</tr>
 				</tbody>
 			</table>
@@ -277,29 +141,74 @@
 	</div>
 	<div class="row">
 		<div class="col-md-3">
-			<form action="/all" method="get">
+			<form method="POST" action="/update_user_weight_browser">
+				<label for="excercise">
+					New Weight:
+				</label>
+				<input type="text" class="form-control" id="excercise" name=new_weight>
+				
+				<input type="hidden"  class="form-control" name=user_name value={{name}}>
+				
+				<input type="hidden"  class="form-control" name=user_surname value={{surname}}>
+				
 				<button type="submit" class="btn btn-lg btn-primary btn-block">
-					Select * from DB
+					Update weight
 				</button>
 			</form>
 		</div>
 		<div class="col-md-3">
-			 
-			<button type="button" class="btn btn-success btn-block btn-lg">
-				Button 2
-			</button>
+			<form method="POST" action="/update_user_height_browser">
+				<label for="height">
+					New Height:
+				</label>
+				<input type="text" class="form-control" id="height" name=new_height>
+				
+				<input type="hidden"  class="form-control" name=user_name value={{name}}>
+				
+				<input type="hidden"  class="form-control" name=user_surname value={{surname}}>
+	
+				<button type="submit" class="btn btn-success btn-block btn-lg">
+					Update height
+				</button>
+			</form>
 		</div>
 		<div class="col-md-3">
-			 
-			<button type="button" class="btn btn-block btn-lg btn-warning">
-				Button 3
-			</button>
+			<form method="POST" action="/update_user_age_browser">
+				<label for="age">
+					New age:
+				</label>
+				<input type="text" class="form-control" id="age" name=new_age>
+				
+				<input type="hidden"  class="form-control" name=user_name value={{name}}>
+				
+				<input type="hidden"  class="form-control" name=user_surname value={{surname}}>
+	
+	
+				<button type="submit" class="btn btn-block btn-lg btn-warning">
+					Update age
+				</button>
+			
+			</form>
 		</div>
 		<div class="col-md-3">
-			 
-			<button type="button" class="btn btn-block btn-lg btn-danger">
-				Button 4
-			</button>
+			<form method="POST" action="/set_pr_browser">
+				<label for="pr_name">
+					PR excercise name:
+				</label>
+				<input type="text" class="form-control" id="pr" name=pr_name>
+				
+				<label for="pr_record">
+					New record:
+				</label>
+				<input type="text" class="form-control" id="pr" name=pr_record>
+				
+				<input type="hidden"  class="form-control" name=user_name value={{name}}>
+				
+				<input type="hidden"  class="form-control" name=user_surname value={{surname}}>
+				<button type="submit" class="btn btn-block btn-lg btn-danger">
+					Set New PR
+				</button>
+			</form>
 		</div>
 	</div>
 </div>
