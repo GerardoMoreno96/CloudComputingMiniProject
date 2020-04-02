@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify,redirect
 from cassandra.cluster import Cluster
+from werkzeug.security import generate_password_hash,check_password_hash
 import datetime
 import json
 import requests
@@ -225,7 +226,7 @@ def create_new_user_browser():
     sex = request.form['sex']
     weight = float(request.form['weight'])
     height = float(request.form['height'])
-    password = request.form['password']
+    password = generate_password_hash(request.form['password'], method='sha256')
 
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied == 0):
@@ -252,7 +253,7 @@ def login_browser():
 
     name =  request.form['name']
     surname = request.form['surname']
-    password = request.form['password']
+    password = generate_password_hash(request.form['password'],method='sha256')
 
     result = session.execute("""select count(*) from gym.accounts where name='{}' AND surname='{}' AND password='{}' ALLOW FILTERING"""\
         .format(name,surname,password))
