@@ -17,11 +17,12 @@ Whithin this app, the user is able to update its age, weight and height whenever
  * Sex (Male or Female)
  * Weight (float)
  * Height (float)
+ * Password 
 
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber"}' 0.0.0.0:5000/new_user
+curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber","password":"PASSWORD"}' 0.0.0.0:5000/new_user
 ```
 
 <b>Get routines:</b>

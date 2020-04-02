@@ -47,8 +47,8 @@ def get_external_workout(category):
 def create_new_user():
       
     if not request.json or not "name" in request.json or not "surname" in request.json \
-        or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json:
-        return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height'}), 400
+        or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json or not "password" in request.json:
+        return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height and password'}), 400
         
     name =  request.json['name']
     surname = request.json['surname']
@@ -56,17 +56,27 @@ def create_new_user():
     sex = request.json['sex']
     weight = float(request.json['weight'])
     height = float(request.json['height'])
-    
-    query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
-        .format(name,surname,age,sex,weight,height)
-    session.execute(query)
+    password = generate_password_hash(request.json['password'], method='sha256')
 
-    current_date = str(datetime.datetime.now())[:10]
-    update_weights_query ="INSERT INTO gym.weights (name,new_date,surname,weight) VALUES ('{}','{}','{}',{})".\
-        format(name,current_date,surname,weight)
-    session.execute(update_weights_query)
 
-    return jsonify({'message': 'created: /new_user {},{}'.format(name,surname)}), 201
+    result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
+    if (result.was_applied == 0):
+
+        query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
+            .format(name,surname,age,sex,weight,height)
+        session.execute(query)
+
+        password_query = "INSERT INTO gym.accounts (name,surname,password) VALUES ('{}','{}','{}')".format(name,surname,password)
+        session.execute(password_query)
+
+        current_date = str(datetime.datetime.now())[:10]
+        update_weights_query ="INSERT INTO gym.weights (name,new_date,surname,weight) VALUES ('{}','{}','{}',{})".\
+            format(name,current_date,surname,weight)
+        session.execute(update_weights_query)
+
+        return jsonify({'message': 'created: /new_user {},{}'.format(name,surname)}), 201
+    else:
+        return jsonify({'error':'User already exists'}), 406
 
 #Get all users in the database
 @app.route('/all', methods=['GET'])
@@ -208,8 +218,6 @@ def update_pr_cli():
         return jsonify({'error':'User does not exist'}), 404
         
 
-
-
 ################### /  _ \/  __\/  _ \/ \  /|/ ___\/  __//  __\ ###################
 ################### | | //|  \/|| / \|| |  |||    \|  \  |  \/| ###################
 ################### | |_\\|    /| \_/|| |/\||\___ ||  /_ |    / ###################
@@ -245,7 +253,7 @@ def create_new_user_browser():
 
         return "Success",201
     else:
-        return jsonify({'error':'User already exists'}), 404
+        return jsonify({'error':'User already exists'}), 406
    
 #Login from the browser
 @app.route('/login_user_browser',methods=['POST'])
@@ -293,10 +301,10 @@ def login_browser():
             return render_template('index.html',name=user_name,surname=user_surname,\
                 age=user_age,weight=user_weight,height=user_height,weight_progress=result,pr=pr_result)
         else:
-            return jsonify({'error':'Incorrect username or password'}), 404
+            return jsonify({'error':'Incorrect username or password'}), 401
 
     else:
-        return jsonify({'error':'Incorrect username or password'}), 404
+        return jsonify({'error':'Incorrect username or password'}), 406
 
 #Make an call to an external API to get routines from the browser
 @app.route('/external_routines_browser/', methods=['POST'])
