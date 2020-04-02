@@ -43,16 +43,17 @@ curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surnam
 
 <b>Update user weight:</b>
 
-/update_user_weight - 
+/update_user_weight_cli - 
  The user must provide:
  * Name
  * Surname
  * Weight (float)
+ * Date (YYYY-mm-DD)
 
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum"}' 0.0.0.0:5000/update_user_weight
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum","date","YYYY-mm-DD"}' 0.0.0.0:5000/update_user_weight_cli
 ```
 
 <b>Update user height:</b>
@@ -82,6 +83,11 @@ In the following format and execute the command:
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber"}' 0.0.0.0:5000/update_client_age
 ```
+
+UPDATE PR 
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"g","surname":"m","excercise_name":"deadlift","new_record":"100 kg"}' 0.0.0.0:5000/update_user_pr_cli
+
+
 - - - -
 
 ### Deployment
@@ -105,6 +111,26 @@ CREATE KEYSPACE gym WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication
 ```
 CREATE TABLE gym.users (Name text, Surname text, Age int, Sex text, Weight float, Height float, PRIMARY KEY (Name, Surname));
 ```
+4.5- 
+CREATE TABLE gym.accounts (Name text, Surname text, Password text, PRIMARY KEY (Name, Surname));
+
+4.6- 
+CREATE TABLE gym.weights (
+    name text,
+    new_date date,
+    surname text,
+    weight float,
+    PRIMARY KEY (name, new_date,surname)
+)WITH CLUSTERING ORDER BY(new_date desc);
+
+4.7 -
+CREATE TABLE gym.personal_records (
+    name text,
+    surname text,
+    excercise_name text,
+    new_record text,
+    PRIMARY KEY (name,surname,excercise_name)
+);
 
 5.- Build our own Docker image:
 ```
