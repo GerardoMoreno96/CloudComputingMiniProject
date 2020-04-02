@@ -253,45 +253,47 @@ def login_browser():
 
     name =  request.form['name']
     surname = request.form['surname']
-    password = generate_password_hash(request.form['password'],method='sha256')
+    password = request.form['password']
 
-    result = session.execute("""select count(*) from gym.accounts where name='{}' AND surname='{}' AND password='{}' ALLOW FILTERING"""\
-        .format(name,surname,password))
+    result = session.execute("""select password from gym.accounts where name='{}' AND surname='{}'"""\
+        .format(name,surname))
     if (result.was_applied != 0):
-        
-        query = "SELECT * FROM gym.users WHERE name='{}' AND surname = '{}'".format(name,surname)
-        user_info = session.execute(query)
-        user_name = user_info.current_rows[0].name
-        user_surname = user_info.current_rows[0].surname
-        user_age = user_info.current_rows[0].age
-        user_weight = user_info.current_rows[0].weight
-        user_height = user_info.current_rows[0].height
+        if check_password_hash(result.current_rows[0].password,password):
+            query = "SELECT * FROM gym.users WHERE name='{}' AND surname = '{}'".format(name,surname)
+            user_info = session.execute(query)
+            user_name = user_info.current_rows[0].name
+            user_surname = user_info.current_rows[0].surname
+            user_age = user_info.current_rows[0].age
+            user_weight = user_info.current_rows[0].weight
+            user_height = user_info.current_rows[0].height
 
-        user_weights_query = "SELECT * FROM gym.weights where name='{}' and surname='{}' ALLOW FILTERING".format(user_name,user_surname)    
-        rows = session.execute(user_weights_query)
-        result=[]
-        for r in rows:
-            result.append(
-                {
-                    'date': str(datetime.datetime.fromtimestamp(r.new_date.seconds))[0:-9],
-                    'weight': r.weight,
-                }
-            )
+            user_weights_query = "SELECT * FROM gym.weights where name='{}' and surname='{}' ALLOW FILTERING".format(user_name,user_surname)    
+            rows = session.execute(user_weights_query)
+            result=[]
+            for r in rows:
+                result.append(
+                    {
+                        'date': str(datetime.datetime.fromtimestamp(r.new_date.seconds))[0:-9],
+                        'weight': r.weight,
+                    }
+                )
 
-        user_pr_query = "SELECT excercise_name,new_record FROM gym.personal_records WHERE name='{}' and surname='{}'".format(name,surname)
-        pr_rows = session.execute(user_pr_query)
-        pr_result=[]
-        for r in pr_rows:
-            pr_result.append(
-                {
-                    'excercise_name': r.excercise_name,
-                    'record': r.new_record,
-                }
-            )
+            user_pr_query = "SELECT excercise_name,new_record FROM gym.personal_records WHERE name='{}' and surname='{}'".format(name,surname)
+            pr_rows = session.execute(user_pr_query)
+            pr_result=[]
+            for r in pr_rows:
+                pr_result.append(
+                    {
+                        'excercise_name': r.excercise_name,
+                        'record': r.new_record,
+                    }
+                )
 
 
-        return render_template('index.html',name=user_name,surname=user_surname,\
-            age=user_age,weight=user_weight,height=user_height,weight_progress=result,pr=pr_result)
+            return render_template('index.html',name=user_name,surname=user_surname,\
+                age=user_age,weight=user_weight,height=user_height,weight_progress=result,pr=pr_result)
+        else:
+            return jsonify({'error':'Incorrect username or password'}), 404
 
     else:
         return jsonify({'error':'Incorrect username or password'}), 404
