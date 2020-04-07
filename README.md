@@ -14,6 +14,8 @@ You can add, get,update or delete values in this app through the terminal or wit
 ### Terminal commands
 <b>Register a new user in the database:</b>
 
+/new_user_cli
+ 
 The user must provide:
  * Name
  * Surname
