@@ -145,6 +145,7 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 - - - -
 
 ### Deployment
+#### Cassandra Container 
 1.- Run cassandra in a Docker container and expose port 9042:
 ```
 sudo docker run --name cassandra-cont -p 9042:9042 -d cassandra
@@ -163,11 +164,22 @@ CREATE KEYSPACE gym WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication
 
 4.- Create the database table for the users:
 ```
-CREATE TABLE gym.users (Name text, Surname text, Age int, Gender text, Weight float, Height float, PRIMARY KEY (Name, Surname));
+CREATE TABLE gym.users (
+    Name text, 
+    Surname text, 
+    Age int, 
+    Gender text, 
+    Weight float, 
+    Height float, 
+    PRIMARY KEY (Name, Surname));
 ```
 5- Create the database table for the accounts: 
 ```
-CREATE TABLE gym.accounts (Name text, Surname text, Password text, PRIMARY KEY (Name, Surname));
+CREATE TABLE gym.accounts (
+    Name text, 
+    Surname text, 
+    Password text, 
+    PRIMARY KEY (Name, Surname));
 ```
 6- Create the database table for the weights: 
 ```
@@ -190,3 +202,62 @@ CREATE TABLE gym.personal_records (
     PRIMARY KEY (name,surname,excercise_name)
 );
 ```
+#### Nginx & Gunicorn setup
+For this project, I used nginx as the web server. This is neccesary as I implemented https in this app, so a web server was a requirement.
+
+1.- 
+Install nginx
+````
+sudo apt install nginx
+```
+
+2.-
+Install gunicorn using pip, nginx is the one that handles the static files and gunicorn is the responsible to execute python code
+```
+pip3 install gunicorn
+```
+
+3.-
+Remove the default file for nginx and create your own 
+```
+sudo rm /etc/nginx/sites-enabled/default
+sudo vim /etc/nginx/sites-enabled/gerapp 
+```
+The name for this app is going to be "gerapp" (My name is gerardo and this is an app, so this is a pun)
+
+
+4.- Inside nginx, type in the following. In this case, "www.gerrysgymapp.co.uk" is the name of the domain that I bought with GoDaddy. I just had to point this DNS to my aws-ec2 elastic IP.
+
+```
+server {
+        server_name www.gerrysgymapp.co.uk;
+
+        location /static {
+                alias /home/ubuntu/CloudComputingMiniProject/static;
+        }
+        
+
+        location / {
+                proxy_pass http://localhost:8000;
+                include /etc/nginx/proxy_params;
+                proxy_redirect off;
+        }
+
+}
+```
+
+5.- 
+Restart nginx
+```
+sudo systemctl restart nginx
+```
+
+6.- Once nginx is configured, we use gunicorn to run the app. 
+```
+gunicorn -w 5 app:app
+```
+-w is the number of workers that you want in your app. This is calculated by multiplying 2*# of cores.
+
+After executing the above command, the app should be running fine.
+
+#### Achieving https
