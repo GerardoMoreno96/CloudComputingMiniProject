@@ -76,7 +76,7 @@ The user must provide:
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum","date","YYYY-mm-DD"}' https://www.gerrysgymapp.co.uk/update_user_weight_cli
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum","date":"YYYY-mm-DD"}' https://www.gerrysgymapp.co.uk/update_user_weight_cli
 ```
 
 <b>Update user height:</b>
