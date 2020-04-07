@@ -15,7 +15,7 @@ You can add, get,update or delete values in this app through the terminal or wit
 <b>Register a new user in the database:</b>
 
 /new_user_cli
- 
+
 The user must provide:
  * Name
  * Surname
@@ -49,8 +49,9 @@ https://www.gerrysgymapp.co.uk/external_routines/arms
 
 <b>Delete user from the database:</b> #Update this
 
-/delete_user - 
- The user must provide:
+/delete_user
+
+The user must provide:
  * Name
  * Surname
 
@@ -62,8 +63,9 @@ curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surnam
 
 <b>Update user weight:</b>
 
-/update_user_weight_cli - 
- The user must provide:
+/update_user_weight_cli
+
+The user must provide:
  * Name
  * Surname
  * Weight (float)
@@ -77,8 +79,9 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 
 <b>Update user height:</b>
 
-/update_user_height - 
- The user must provide:
+/update_user_height
+
+The user must provide:
  * Name
  * Surname
  * Height (float)
@@ -91,8 +94,9 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 
 <b>Update user age:</b>
 
-/update_user_height - 
- The user must provide:
+/update_user_height
+
+The user must provide:
  * Name
  * Surname
  * Age (integer)
@@ -106,9 +110,9 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 <b> Add PR (personal record) for new excercise</b>
 
 /set_user_pr_cli
-Here you can set a pr for an excercise that you haven't recorded before
 
- The user must provide:
+Here you can set a pr for an excercise that you haven't recorded before
+The user must provide:
  * Name
  * Surname
  * Excercise name (Text)
@@ -123,9 +127,9 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname"
 <b> Update the value of an existing PR</b>
 
 /update_user_pr_cli
-Here you can update an existing pr to a new value.
 
- The user must provide:
+Here you can update an existing pr to a new value.
+The user must provide:
  * Name
  * Surname
  * Excercise name (Text)
