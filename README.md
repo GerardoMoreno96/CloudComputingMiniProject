@@ -28,7 +28,7 @@ The user must provide:
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber","password":"PASSWORD"}' https://www.gerrysgymapp.co.uk/new_user_cli
+curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","gender":"Male/Female","weight":"FloatNumber","height":"FloatNumber","password":"PASSWORD"}' https://www.gerrysgymapp.co.uk/new_user_cli
 ```
 <b>Get routines:</b>
 
@@ -47,9 +47,11 @@ Example:
 https://www.gerrysgymapp.co.uk/external_routines/arms
 ```
 
-<b>Delete user from the database:</b> #Update this
+<b>Delete user from the database:</b>
 
 /delete_user
+
+This command will delete all the information of the user from the different database tables, including weights and personal records.
 
 The user must provide:
  * Name
@@ -161,12 +163,14 @@ CREATE KEYSPACE gym WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication
 
 4.- Create the database table for the users:
 ```
-CREATE TABLE gym.users (Name text, Surname text, Age int, Sex text, Weight float, Height float, PRIMARY KEY (Name, Surname));
+CREATE TABLE gym.users (Name text, Surname text, Age int, Gender text, Weight float, Height float, PRIMARY KEY (Name, Surname));
 ```
-4.5- 
+5- Create the database table for the accounts: 
+```
 CREATE TABLE gym.accounts (Name text, Surname text, Password text, PRIMARY KEY (Name, Surname));
-
-4.6- 
+```
+6- Create the database table for the weights: 
+```
 CREATE TABLE gym.weights (
     name text,
     new_date date,
@@ -174,8 +178,10 @@ CREATE TABLE gym.weights (
     weight float,
     PRIMARY KEY (name, new_date,surname)
 )WITH CLUSTERING ORDER BY(new_date desc);
+```
 
-4.7 -
+7 - Create the database table for the PRs
+```
 CREATE TABLE gym.personal_records (
     name text,
     surname text,
@@ -183,15 +189,4 @@ CREATE TABLE gym.personal_records (
     new_record text,
     PRIMARY KEY (name,surname,excercise_name)
 );
-
-5.- Build our own Docker image:
 ```
-sudo docker build . --tag=gymprogress:v1
-```
-
-6.- Run the container for our image:
-```
-sudo docker run -p 5000:5000 gymprogress:v1
-```
-
-After that, the webapp will be accessible at port 5000

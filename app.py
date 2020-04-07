@@ -79,23 +79,23 @@ def create_new_user():
         return jsonify({'error':'User already exists'}), 406
 
 #Get all users in the database
-@app.route('/all', methods=['GET'])
-def get_everything():
-    rows = session.execute( """ SELECT * FROM gym.users""")
-    result=[]
-    for r in rows:
-        result.append(
-            {
-                'name': r.name,
-                'surname': r.surname,
-                'age': r.age,
-                'gender': r.gender,
-                'weight': r.weight,
-                'height': r.height
-            }
-        )
-    # return render_template("index.html",content=result)
-    return jsonify(result)
+# @app.route('/all', methods=['GET'])
+# def get_everything():
+#     rows = session.execute( """ SELECT * FROM gym.users""")
+#     result=[]
+#     for r in rows:
+#         result.append(
+#             {
+#                 'name': r.name,
+#                 'surname': r.surname,
+#                 'age': r.age,
+#                 'gender': r.gender,
+#                 'weight': r.weight,
+#                 'height': r.height
+#             }
+#         )
+#     # return render_template("index.html",content=result)
+#     return jsonify(result)
 
 #Delete an user from the Database
 @app.route('/delete_user',methods=['DELETE'])
@@ -107,6 +107,27 @@ def delete_user():
     surname = request.json['surname']
     query = "DELETE FROM gym.users WHERE name='{}' AND surname='{}'".format(name,surname)
     session.execute(query)
+
+    accounts_query = "DELETE FROM gym.accounts where name='{}' and surname='{}'".format(name,surname)
+    session.execute(accounts_query)
+
+    rows = get_weights_query = "SELECT new_date from gym.weights where name='{}' and surname='{}' ALLOW FILTERING".format(name,surname)
+    rows = session.execute(get_weights_query)
+    result = []
+    for r in rows:
+        result.append(
+            {
+                'date': str(datetime.datetime.fromtimestamp(r.new_date.seconds))[0:-9],
+            }
+        )
+    for i in result:
+        delete_weights_query = "DELETE FROM gym.weights WHERE name='{}' AND surname='{}' AND new_date='{}'".format(name,surname,i['date'])
+        session.execute(delete_weights_query)
+    
+    
+    delete_pr_query = "DELETE FROM gym.personal_records WHERE name='{}' and surname='{}'".format(name,surname)
+    session.execute(delete_pr_query)
+
     return jsonify({'message': 'deleted: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
 
@@ -265,7 +286,7 @@ def login_browser():
 
     result = session.execute("""select password from gym.accounts where name='{}' AND surname='{}'"""\
         .format(name,surname))
-    if (result.was_applied != 0):
+    if (len(result.current_rows) !=0):
         if check_password_hash(result.current_rows[0].password,password):
             query = "SELECT * FROM gym.users WHERE name='{}' AND surname = '{}'".format(name,surname)
             user_info = session.execute(query)
