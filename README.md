@@ -2,19 +2,24 @@
 
 The purpose of this webapp is to help people that go to the gym to record their progress in an easy and conventional way. This app makes calls to an external API hosted in https://wger.de/es/software/api in order get information about different routines depending on what part of the body you want to excercise.
 
-Whithin this app, the user is able to update its age, weight and height whenever they find it convenient.
+Whithin this app, the user is able to update its age, weight and height whenever they find it convenient. Also, they can keep a record of their weight and personal records in an easy and conventional way.
+
+The website's URL is:
+https://www.gerrysgymapp.co.uk/
+
+## How it works?
+You can add, get,update or delete values in this app through the terminal or with the user interface that can be accesed at https://www.gerrysgymapp.co.uk/
 
 
-### How it works?
-
+### Terminal commands
 <b>Register a new user in the database:</b>
 
-/new_user - 
+/new_user_cli - 
  The user must provide:
  * Name
  * Surname
  * Age (integer)
- * Sex (Male or Female)
+ * Gender (Male or Female)
  * Weight (float)
  * Height (float)
  * Password 
@@ -22,14 +27,27 @@ Whithin this app, the user is able to update its age, weight and height whenever
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber","password":"PASSWORD"}' 0.0.0.0:5000/new_user
+curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber","sex":"Male/Female","weight":"FloatNumber","height":"FloatNumber","password":"PASSWORD"}' https://www.gerrysgymapp.co.uk/new_user_cli
 ```
-
 <b>Get routines:</b>
 
-/external_routines
+/external_routines/<category>
+You can get different workouts depending on what you want to excercise. This particular request is the one that makes a call to an external api in https://wger.de/es/software/api.
+ The valid categories are:
+ * Abs
+ * Arms
+ * Back
+ * Calves
+ * Chest
+ * Legs
+ * Shoulders 
 
-<b>Delete user from the database:</b>
+Example:
+```
+https://www.gerrysgymapp.co.uk/external_routines/arms
+```
+
+<b>Delete user from the database:</b> #Update this
 
 /delete_user - 
  The user must provide:
@@ -39,7 +57,7 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname"
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surname":"SURNAME"}' 0.0.0.0:5000/delete_user
+curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surname":"SURNAME"}' https://www.gerrysgymapp.co.uk/delete_user
 ```
 
 <b>Update user weight:</b>
@@ -54,7 +72,7 @@ curl -i -H "Content-Type: application/json" -X DELETE -d '{"name":"NAME","surnam
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum","date","YYYY-mm-DD"}' 0.0.0.0:5000/update_user_weight_cli
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","weight":"FloatNum","date","YYYY-mm-DD"}' https://www.gerrysgymapp.co.uk/update_user_weight_cli
 ```
 
 <b>Update user height:</b>
@@ -68,7 +86,7 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","height":"FloatNumber"}' 0.0.0.0:5000/update_client_height
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","height":"FloatNUmber"}' https://www.gerrysgymapp.co.uk/update_user_height
 ```
 
 <b>Update user age:</b>
@@ -82,12 +100,41 @@ curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":
 In the following format and execute the command:
 
 ```
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNumber"}' 0.0.0.0:5000/update_client_age
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","age":"IntegerNUmber"}' https://www.gerrysgymapp.co.uk/update_user_age
 ```
 
-UPDATE PR 
-curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"g","surname":"m","excercise_name":"deadlift","new_record":"100 kg"}' 0.0.0.0:5000/update_user_pr_cli
+<b> Add PR (personal record) for new excercise</b>
 
+/set_user_pr_cli
+Here you can set a pr for an excercise that you haven't recorded before
+
+ The user must provide:
+ * Name
+ * Surname
+ * Excercise name (Text)
+ * New record (Text)
+
+In the following format and execute the command:
+
+```
+curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname":"SURNAME","excercise_name":"EXCERCISE_NAME","new_record":"NEW_RECORD"}' https://www.gerrysgymapp.co.uk/set_user_pr_cli
+```
+
+<b> Update the value of an existing PR</b>
+
+/update_user_pr_cli
+Here you can update an existing pr to a new value.
+
+ The user must provide:
+ * Name
+ * Surname
+ * Excercise name (Text)
+ * New record (Text)
+
+In the following format and execute the command:
+
+```
+curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","excercise_name":"EXCERCISE_NAME","new_record":"NEW_RECORD"}' https://www.gerrysgymapp.co.uk/update_user_pr_cli
 
 - - - -
 

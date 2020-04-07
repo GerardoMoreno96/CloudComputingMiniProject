@@ -47,13 +47,13 @@ def get_external_workout(category):
 def create_new_user():
       
     if not request.json or not "name" in request.json or not "surname" in request.json \
-        or not "age" in request.json or not "sex" in request.json or not "weight" in request.json or not "height" in request.json or not "password" in request.json:
-        return jsonify({'error':'the new record needs to have name,surname,age,sex,weight,height and password'}), 400
+        or not "age" in request.json or not "gender" in request.json or not "weight" in request.json or not "height" in request.json or not "password" in request.json:
+        return jsonify({'error':'the new record needs to have name,surname,age,gender,weight,height and password'}), 400
         
     name =  request.json['name']
     surname = request.json['surname']
     age = int(request.json['age'])
-    sex = request.json['sex']
+    gender = request.json['gender']
     weight = float(request.json['weight'])
     height = float(request.json['height'])
     password = generate_password_hash(request.json['password'], method='sha256')
@@ -62,8 +62,8 @@ def create_new_user():
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied == 0):
 
-        query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
-            .format(name,surname,age,sex,weight,height)
+        query = "INSERT INTO gym.users(name,surname,age,gender,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
+            .format(name,surname,age,gender,weight,height)
         session.execute(query)
 
         password_query = "INSERT INTO gym.accounts (name,surname,password) VALUES ('{}','{}','{}')".format(name,surname,password)
@@ -89,7 +89,7 @@ def get_everything():
                 'name': r.name,
                 'surname': r.surname,
                 'age': r.age,
-                'sex': r.sex,
+                'gender': r.gender,
                 'weight': r.weight,
                 'height': r.height
             }
@@ -113,7 +113,7 @@ def delete_user():
 #Update the weight of a user
 @app.route('/update_user_weight_cli',methods=['PUT'])
 def update_user_weight():
-    if not request.json or not "name" in request.json or not "surname" in request.json or not "weight" or not "date":
+    if not request.json or not "name" in request.json or not "surname" in request.json or not "weight" or not "date" in request.json:
         return jsonify({'error':'the new record needs to have name,surname and weight'}), 400
 
     name = request.json['name']
@@ -149,7 +149,7 @@ def update_user_height():
     if (result.was_applied != 0):
         query = "UPDATE gym.users SET height={} WHERE name='{}' AND surname='{}'".format(height,name,surname)
         session.execute(query)
-        return jsonify({'message': 'updated: /user/{},{}'.format\
+        return jsonify({'message': 'updated height for : /user/{},{}'.format\
             (request.json['name'],request.json['surname'])}),200
     else:
         return jsonify({'error':'User does not exist'}), 404
@@ -168,7 +168,7 @@ def update_user_age():
     if (result.was_applied != 0):
         query = "UPDATE gym.users SET age={} WHERE name='{}' AND surname='{}'".format(age,name,surname)
         session.execute(query)
-        return jsonify({'message': 'updated: /user/{},{}'.format\
+        return jsonify({'message': 'updated age for: /user/{},{}'.format\
             (request.json['name'],request.json['surname'])}),200
     else:
         return jsonify({'error':'User does not exist'}), 404
@@ -231,7 +231,7 @@ def create_new_user_browser():
     name =  request.form['name']
     surname = request.form['surname']
     age = int(request.form['age'])
-    sex = request.form['sex']
+    gender = request.form['gender']
     weight = float(request.form['weight'])
     height = float(request.form['height'])
     password = generate_password_hash(request.form['password'], method='sha256')
@@ -239,8 +239,8 @@ def create_new_user_browser():
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied == 0):
 
-        query = "INSERT INTO gym.users(name,surname,age,sex,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
-            .format(name,surname,age,sex,weight,height)
+        query = "INSERT INTO gym.users(name,surname,age,gender,weight,height) VALUES ( '{}','{}',{},'{}',{},{})"\
+            .format(name,surname,age,gender,weight,height)
         session.execute(query)
 
         password_query = "INSERT INTO gym.accounts (name,surname,password) VALUES ('{}','{}','{}')".format(name,surname,password)
