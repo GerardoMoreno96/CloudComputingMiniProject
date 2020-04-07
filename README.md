@@ -207,7 +207,7 @@ For this project, I used nginx as the web server. This is neccesary as I impleme
 
 1.- 
 Install nginx
-````
+```
 sudo apt install nginx
 ```
 
