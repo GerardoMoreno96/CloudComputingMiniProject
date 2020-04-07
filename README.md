@@ -14,8 +14,7 @@ You can add, get,update or delete values in this app through the terminal or wit
 ### Terminal commands
 <b>Register a new user in the database:</b>
 
-/new_user_cli - 
- The user must provide:
+The user must provide:
  * Name
  * Surname
  * Age (integer)
@@ -31,7 +30,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"name":"NAME","surname"
 ```
 <b>Get routines:</b>
 
-/external_routines/<category>
 You can get different workouts depending on what you want to excercise. This particular request is the one that makes a call to an external api in https://wger.de/es/software/api.
  The valid categories are:
  * Abs
@@ -135,7 +133,7 @@ In the following format and execute the command:
 
 ```
 curl -i -H "Content-Type: application/json" -X PUT -d '{"name":"NAME","surname":"SURNAME","excercise_name":"EXCERCISE_NAME","new_record":"NEW_RECORD"}' https://www.gerrysgymapp.co.uk/update_user_pr_cli
-
+```
 - - - -
 
 ### Deployment
