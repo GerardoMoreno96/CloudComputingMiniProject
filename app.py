@@ -76,7 +76,7 @@ def create_new_user():
 
         return jsonify({'message': 'created: /new_user {},{}'.format(name,surname)}), 201
     else:
-        return jsonify({'error':'User already exists'}), 406
+        return jsonify({'error':'User already exists'}), 409
 
 #Get all users in the database
 # @app.route('/all', methods=['GET'])
@@ -135,7 +135,7 @@ def delete_user():
 @app.route('/update_user_weight_cli',methods=['PUT'])
 def update_user_weight():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "weight" or not "date" in request.json:
-        return jsonify({'error':'the new record needs to have name,surname and weight'}), 400
+        return jsonify({'error':'the new record needs to have name,surname, weight and date'}), 400
 
     name = request.json['name']
     surname = request.json['surname']
@@ -274,7 +274,7 @@ def create_new_user_browser():
 
         return "Success",201
     else:
-        return jsonify({'error':'User already exists'}), 406
+        return jsonify({'error':'User already exists'}), 409
    
 #Login from the browser
 @app.route('/login_user_browser',methods=['POST'])
@@ -325,7 +325,7 @@ def login_browser():
             return jsonify({'error':'Incorrect username or password'}), 401
 
     else:
-        return jsonify({'error':'Incorrect username or password'}), 406
+        return jsonify({'error':'User does not exist'}), 404
 
 #Make an call to an external API to get routines from the browser
 @app.route('/external_routines_browser/', methods=['POST'])
