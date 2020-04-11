@@ -264,4 +264,4 @@ After executing the above command, the app should be running fine.
 Once we have nginx as our webserver, we can obtain a free SSL certificate through https://letsencrypt.org/. We can use the Cerbot instructions to get the certificate for our webapp once we have selected the appropiate webserver and AMI running in our instance. After running the commands, we can see that https is now enabled in the webapp.
 
 ### Hash encryption
-Another feature of this webapp is hash encryption. When a new user gets registered in the app, its password will not be stored as plain text, instead it will be encrypted by using SHA256 and then it will be stored in the database. 
+Another feature of this webapp is hash encryption. When a new user is registered in the app, its password will not be stored as plain text, instead it will be encrypted by using SHA256 and then it will be stored in the database. 
