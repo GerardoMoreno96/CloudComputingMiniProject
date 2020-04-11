@@ -2,7 +2,7 @@
 
 The purpose of this webapp is to help people that go to the gym to record their progress in an easy and conventional way. This app makes calls to an external API hosted in https://wger.de/es/software/api in order get information about different routines depending on what part of the body you want to excercise.
 
-Whithin this app, the user is able to update its age, weight and height whenever they find it convenient. Also, they can keep a record of their weight and personal records in an easy and conventional way.
+Within this app, the user is able to update its age, weight and height whenever they find it convenient. Also, they can keep a record of their weight and personal records in an easy and conventional way.
 
 The website's URL is:
 https://www.gerrysgymapp.co.uk/
@@ -256,8 +256,12 @@ sudo systemctl restart nginx
 ```
 gunicorn -w 5 app:app
 ```
--w is the number of workers that you want in your app. This is calculated by multiplying 2*# of cores.
+-w is the number of workers that you want in your app. This is calculated by multiplying (2*# of cores)+1.
 
 After executing the above command, the app should be running fine.
 
 #### Achieving https
+Once we have nginx as our webserver, we can obtain a free SSL certificate through https://letsencrypt.org/. We can use the Cerbot instructions to get the certificate for our webapp once we have selected the appropiate webserver and AMI running in our instance. After running the commands, we can see that https is now enabled in the webapp.
+
+### Hash encryption
+Another feature of this webapp is hash encryption. When a new user gets registered in the app, its password will not be stored as plain text, instead it will be encrypted by using SHA256 and then it will be stored in the database. 

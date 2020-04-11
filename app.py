@@ -58,7 +58,7 @@ def create_new_user():
     height = float(request.json['height'])
     password = generate_password_hash(request.json['password'], method='sha256')
 
-
+    #Check if that user does not exist already
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied == 0):
 
@@ -131,7 +131,7 @@ def delete_user():
     return jsonify({'message': 'deleted: /user/{},{}'.format\
         (request.json['name'],request.json['surname'])}),200
 
-#Update the weight of a user
+#Update the weight of a user from the command line
 @app.route('/update_user_weight_cli',methods=['PUT'])
 def update_user_weight():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "weight" or not "date" in request.json:
@@ -142,6 +142,7 @@ def update_user_weight():
     weight = float(request.json['weight'])
     current_date = request.json['date']
     
+    #check if the user exists
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied != 0):
         query = "UPDATE gym.users SET weight={} WHERE name='{}' AND surname='{}'".format(weight,name,surname)
@@ -156,7 +157,7 @@ def update_user_weight():
     else:
         return jsonify({'error':'User does not exist'}), 404
 
-#Update the height of a user
+#Update the height of a user from the command line
 @app.route('/update_user_height',methods=['PUT'])
 def update_user_height():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "height" in request.json:
@@ -166,6 +167,7 @@ def update_user_height():
     surname = request.json['surname']
     height = float(request.json['height'])
     
+    #check if the user exists    
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied != 0):
         query = "UPDATE gym.users SET height={} WHERE name='{}' AND surname='{}'".format(height,name,surname)
@@ -175,7 +177,7 @@ def update_user_height():
     else:
         return jsonify({'error':'User does not exist'}), 404
 
-#Update the age of a user
+#Update the age of a user from the command line
 @app.route('/update_user_age',methods=['PUT'])
 def update_user_age():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "age" in request.json:
@@ -185,6 +187,8 @@ def update_user_age():
     surname = request.json['surname']
     age = int(request.json['age'])
     
+
+    #check if the user exists
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied != 0):
         query = "UPDATE gym.users SET age={} WHERE name='{}' AND surname='{}'".format(age,name,surname)
@@ -194,6 +198,8 @@ def update_user_age():
     else:
         return jsonify({'error':'User does not exist'}), 404
 
+
+#set a new pr for an unregistered excercise
 @app.route('/set_user_pr_cli',methods=['POST'])
 def set_pr_cli():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "excercise_name" in request.json \
@@ -205,7 +211,8 @@ def set_pr_cli():
     surname = request.json['surname']
     excercise_name = request.json['excercise_name']
     new_record = request.json['new_record']
-    
+
+    #check if the user exists
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied != 0):
         query = "INSERT INTO gym.personal_records(name,surname,excercise_name,new_record) VALUES('{}','{}','{}','{}')".\
@@ -216,6 +223,7 @@ def set_pr_cli():
     else:
         return jsonify({'error':'User does not exist'}), 404
     
+#set a record for a registered excercise    
 @app.route('/update_user_pr_cli',methods=['PUT'])
 def update_pr_cli():
     if not request.json or not "name" in request.json or not "surname" in request.json or not "excercise_name" in request.json \
@@ -227,7 +235,8 @@ def update_pr_cli():
     surname = request.json['surname']
     excercise_name = request.json['excercise_name']
     new_record = request.json['new_record']
-    
+
+    #check if the user exists
     result = session.execute("""select count(*) from gym.users where name='{}' AND surname='{}'""".format(name,surname))
     if (result.was_applied != 0):
         query = "UPDATE gym.personal_records SET new_record='{}' WHERE name='{}' AND surname='{}' AND excercise_name='{}'".\
@@ -351,6 +360,8 @@ def update_user_weight_browser():
 
     return jsonify({'message': 'updated: /user/{},{}'.format(name,surname)}),200
 
+
+#Update the height of a user from the browser
 @app.route('/update_user_height_browser',methods=['POST']) #HTML doesn't allow PUT request
 def update_user_height_browser():
 
@@ -362,6 +373,7 @@ def update_user_height_browser():
     session.execute(query)
     return jsonify({'message': 'updated: /user/{},{}'.format(name,surname)}),200
 
+#Update the age of a user from the browser
 @app.route('/update_user_age_browser',methods=['POST']) #HTML doesn't allow PUT request
 def update_user_age_browser():
 
@@ -373,6 +385,8 @@ def update_user_age_browser():
     session.execute(query)
     return jsonify({'message': 'updated: /user/{},{}'.format(name,surname)}),200
 
+
+#set a new pr for an  excercise from the browser
 @app.route('/set_pr_browser', methods=['POST'])
 def set_pr_browser():
     
@@ -380,16 +394,19 @@ def set_pr_browser():
     surname = request.form['user_surname']
     excercise_name = request.form['pr_name']
     new_record = request.form['pr_record']
+    #Get all prs with that name
     count_pr_query = "SELECT COUNT(*) from gym.personal_records WHERE name='{}' and surname='{}' and excercise_name='{}'".\
         format(name,surname,excercise_name)
     pr_rows = session.execute(count_pr_query)
     if pr_rows.was_applied == 0:
+        #If the excercise is NOT registered in the database
         query = "INSERT INTO gym.personal_records(name,surname,excercise_name,new_record) VALUES('{}','{}','{}','{}')".\
             format(name,surname,excercise_name,new_record)
         session.execute(query)
         return jsonify({'message': 'created pr for : /user/{},{}'.format\
             (name,surname)}),200
     else:
+        #If the excercise is already registered in the database
         query = "UPDATE gym.personal_records SET new_record='{}' WHERE name='{}' AND surname='{}' AND excercise_name='{}'".\
             format(new_record,name,surname,excercise_name)
         session.execute(query)
