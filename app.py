@@ -17,7 +17,7 @@ def login():
     return render_template('login.html')
 
 
-#Make an call to an external API to get routines
+#Make a call to an external API to get routines
 @app.route('/external_routines/<category>', methods=['GET'])
 def get_external_workout(category):
     categories_url  = 'https://wger.de/api/v2/exercisecategory/'
@@ -253,6 +253,10 @@ def update_pr_cli():
 ################### | |_\\|    /| \_/|| |/\||\___ ||  /_ |    / ###################
 ################### \____/\_/\_\\____/\_/  \|\____/\____\\_/\_\ ###################
                                            
+## Note: You will see that all the methods in the browser are using the 'POST' method, this is because first I have
+## get what is written in the HTML textbox. If I don't use POST there's no way to get the information from the textbox.
+## Also, HTML doesn't allow the 'PUT' method, but don't worry, all the methods that you see in here can also be executed
+## through the terminal with their appropiate REST method.
 
 # Create a new user from the browser
 @app.route('/new_user_browser', methods=['POST'])

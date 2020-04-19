@@ -261,7 +261,28 @@ gunicorn -w 5 app:app
 After executing the above command, the app should be running fine.
 
 #### Achieving https
-Once we have nginx as our webserver, we can obtain a free SSL certificate through https://letsencrypt.org/. We can use the Cerbot instructions to get the certificate for our webapp once we have selected the appropiate webserver and AMI running in our instance. After running the commands, we can see that https is now enabled in the webapp.
+Once we have nginx as our webserver, we can obtain a free SSL certificate through https://letsencrypt.org/. We can use the Cerbot instructions to get the certificate for our webapp once we have selected the appropiate webserver and AMI running in our instance:
+
+Add Certbot PPA:
+```
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo add-apt-repository universe
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+```
+
+Install cerbot:
+```
+sudo apt-get install certbot python-certbot-nginx
+```
+
+Get and install your certificates
+```
+sudo certbot --nginx
+```
+
+After completing the previous steps, we can see that https is now enabled in the webapp.
 
 ![](images/https1.png)
 
